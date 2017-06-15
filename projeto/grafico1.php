@@ -13,77 +13,70 @@ if($_SESSION['acesso'] != "true"){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <title>Controle de Temperatura</title>
+    <title>Gráfico 1</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="css/estilo-controle.css" rel="stylesheet" type="text/css"/>
     
-    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="js/jquery.min.js" type="text/javascript"></script> 
     <script src="js/bootstrap.min.js" type="text/javascript"></script>
     <script src="js/bootbox.min.js" type="text/javascript"></script>
-    <script src="js/highcharts.js" type="text/javascript"></script>
+    <script src="js/highstock.js" type="text/javascript"></script>
+    <script src="js/highcharts-more.js" type="text/javascript"></script>
+    <script src="js/exporting.js" type="text/javascript"></script>
     
     <script>
-		var chart; // global
-		
-		function requestData() {
-			$.ajax({
-				url: 'plotgrafico.php', 
-				success: function(point) {
-					var series = chart.series[0],
-					shift = series.data.length > 40; 
-					chart.series[0].addPoint(eval(point), true, shift);
-					setTimeout(requestData, 3000);	
-				},
-				cache: false
-			});
-		}
-			
-		$(document).ready(function() {
-                            Highcharts.setOptions({
-                                global: {
-                                timezoneOffset: 3 * 60
-                                }
-                                
-                            });
-
+    $.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=range.json&callback=?', function (data) {
         
-                            chart = new Highcharts.Chart({
-				chart: {
-					renderTo: 'container',
-					defaultSeriesType: 'spline',
-					spacingLeft: 10,
-                                        spacingRight:10,
-                                        spacingTop:10,
-                                        events: {
-						load: requestData
-					}
-				},
-				title: {
-					text: 'Temperatura'
-				},
-				xAxis: {
-					type: 'datetime',
-					tickPixelInterval: 50,
-					maxZoom: 20 * 1000
-				},
-				yAxis: {
-					minPadding: 0.2,
-					maxPadding: 0.2,
-					title: {
-						text: 'Temp (ºC)',
-						margin: 10
-					}
-				},
-				series: [{
-					name: 'Sensor 1',
-					data: []
-					}]
-			});
-                        
-		});
-		</script>
-    
+        Highcharts.setOptions({
+                lang: {
+                    exportButtonTitle: "Exportar",
+                    printButtonTitle: "Imprimir",
+                    rangeSelectorFrom: "De",
+                    rangeSelectorTo: "Até",
+                    rangeSelectorZoom: "Periodo",
+                    downloadPNG: 'Salvar gráfico como imagem PNG',
+                    downloadJPEG: 'Salvar gráfico como imagem JPEG',
+                    downloadSVG: 'Salvar gráfico como imagem SVG',
+                    downloadPDF: 'Salvar em documento PDF',
+                    contextButtonTitle: 'Opções',
+                    printChart: 'Imprimir gráfico'
+                    }
+                }
+            );
+
+        Highcharts.stockChart('container', {
+
+            chart: {
+                renderTo: 'container',
+                type: 'arearange',
+                spacingLeft: 10,
+                spacingRight:10,
+                spacingTop:10
+            },
+
+            rangeSelector: {
+                selected: 2
+            },
+
+            title: {
+                text: 'Temperature variation by day'
+            },
+
+            tooltip: {
+                valueSuffix: '°C'
+            },
+
+            series: [{
+                name: 'Temperatures',
+                data: data
+            }]
+
+        });
+    });
+
+</script>
+       
   </head>
   <body>
      <nav class="navbar navbar-default navbar-fixed-top">
@@ -117,11 +110,9 @@ if($_SESSION['acesso'] != "true"){
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-    
-    <div class="container">
-        <h4>Bem vindo <?php echo $_SESSION['nome'];?></h4>
-    </div>
+      
     <div id="container"></div>
-		
+  
+      
     </body>
 </html>
