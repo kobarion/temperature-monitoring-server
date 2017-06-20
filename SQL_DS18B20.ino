@@ -2,30 +2,40 @@
 #include <ESP8266WiFi.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
-/********************** Configura√ß√£o OneWire ***************************/
+/********************** ConfiguraÁ„o OneWire ***************************/
 
 #define ONE_WIRE_BUS 2  // pino D4 na placa ESP8266 nodemcu V2
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature DS18B20(&oneWire);
 
 /*********************** Variaveis Globais *****************************/
-
+int ledPin = 13; //GPIO 13 (D7)
+int ledBlink = 4; //GPIO 4 (D2)
+int ledBlink1 = 5; //GPIO 5 (D2)
 float temp;
 int sent = 0;
 const int postingInterval = 5; // intervalo de postagem para o servidor
 
-/************************* Servidor **********************************/
+/************************* ThingSpeak **********************************/
 
-const char* server = "ip";
-/************************* Conex√£o WiFi*********************************/
+const char* server = "192.168.0.11";
+/************************* Conex„o WiFi*********************************/
 
-const char* ssid = "ssid"; 
-const char* password = "password";
+const char* ssid = "Net Virtua 138"; 
+const char* password = "house138";
 
 /*************************** Setup **************************************/
 
 void setup() {
   Serial.begin(115200);
+  pinMode(ledPin, OUTPUT);
+  pinMode(ledBlink, OUTPUT);
+  pinMode(ledBlink1, OUTPUT);
+  digitalWrite(ledPin,LOW);
+  digitalWrite(ledBlink,LOW);
+  digitalWrite(ledBlink1,LOW);
+  delay(10);
+  digitalWrite(ledPin,HIGH);
   connectWifi();
  }
 
@@ -34,35 +44,42 @@ void setup() {
 void loop() {
 
   if (WiFi.status() != WL_CONNECTED){
-    connectWifi();
+    connectWifi();    
   }
+  digitalWrite(ledPin,LOW);
+  digitalWrite(ledBlink,LOW);
+  digitalWrite(ledBlink1,LOW);
   
-  DS18B20.requestTemperatures(); 
-  if (DS18B20.getTempCByIndex(0) != 85.00){
-    if (DS18B20.getTempCByIndex(0) != -127.00){
-      temp = DS18B20.getTempCByIndex(0);
-      sendTemperatureTS(temp);
-    }   
-  }
-  Serial.print(String(sent)+" Temperature: ");
-  Serial.println(temp);  
   int count = postingInterval;
   while(count--)
   delay(1000);
+  
+  DS18B20.requestTemperatures(); 
 
+  if (DS18B20.getTempCByIndex(0) != 85.00){
+    if (DS18B20.getTempCByIndex(0) != -127.00){
+      temp = DS18B20.getTempCByIndex(0);
+      sendTemperature(temp);
+    }   
+  }
+  Serial.print(String(sent)+" Temperature: ");
+  Serial.println(temp);
 }
 
-/******************* Implementa√ß√£o dos Prototypes**************************/
+/******************* ImplementaÁ„o dos Prototypes**************************/
 
-/* Configura√ß√£o WiFi */
+/* ConfiguraÁ„o WiFi */
 
 void connectWifi()
 {
   Serial.print("Connecting to "+*ssid);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
-  delay(1000);
-  Serial.print(".");
+    digitalWrite(ledBlink1,LOW);
+    delay(500);
+    digitalWrite(ledBlink1,HIGH);
+    delay(500);
+    Serial.print(".");
   }  
   Serial.println("");
   Serial.println("Connected");
@@ -71,7 +88,7 @@ void connectWifi()
 
 /* Envio do valor da temperatura para servidor */
 
-void sendTemperatureTS(float temp)
+void sendTemperature(float temp)
 {  
    WiFiClient client;
   
@@ -79,19 +96,20 @@ void sendTemperatureTS(float temp)
    Serial.println("WiFi Client connected ");
    
    String postStr;
-   postStr += "&field1=";
+   postStr += "field1=";
    postStr += String(temp);
-      
+               
    client.print("POST /projeto/salvardados.php HTTP/1.1\n");
-   client.print("Host: hostip\n");
+   client.print("Host: 192.168.0.11\n");
    client.print("Connection: close\n");
    client.print("Content-Type: application/x-www-form-urlencoded\n");
    client.print("Content-Length: ");
    client.print(postStr.length());
    client.print("\n\n");
    client.print(postStr);
-   delay(1000);
-   
+   digitalWrite(ledBlink,HIGH);
+   delay(300);
+   digitalWrite(ledBlink,LOW);
    }//end if
    sent++;
  client.stop();

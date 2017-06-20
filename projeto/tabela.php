@@ -23,67 +23,7 @@ if($_SESSION['acesso'] != "true"){
     <script src="js/bootbox.min.js" type="text/javascript"></script>
     <script src="js/highcharts.js" type="text/javascript"></script>
     
-    <script>
-		var chart; // global
-		
-		function requestData() {
-			$.ajax({
-				url: 'plotgrafico.php', 
-				success: function(point) {
-					var series = chart.series[0],
-					shift = series.data.length > 40; 
-					chart.series[0].addPoint(eval(point), true, shift);
-					setTimeout(requestData, 3000);	
-				},
-				cache: false
-			});
-		}
-			
-		$(document).ready(function() {
-                            Highcharts.setOptions({
-                                global: {
-                                timezoneOffset: 3 * 60
-                                }
-                                
-                            });
-
-        
-                            chart = new Highcharts.Chart({
-				chart: {
-					renderTo: 'container',
-					defaultSeriesType: 'spline',
-					spacingLeft: 10,
-                                        spacingRight:10,
-                                        spacingTop:10,
-                                        events: {
-						load: requestData
-					}
-				},
-				title: {
-					text: 'Temperatura'
-				},
-				xAxis: {
-					type: 'datetime',
-					tickPixelInterval: 50,
-					maxZoom: 20 * 1000
-				},
-				yAxis: {
-					minPadding: 0.2,
-					maxPadding: 0.2,
-					title: {
-						text: 'Temp (ºC)',
-						margin: 10
-					}
-				},
-				series: [{
-					name: 'Sensor 1',
-					data: []
-					}]
-			});
-                        
-		});
-		</script>
-    
+       
   </head>
   <body>
      <nav class="navbar navbar-default navbar-fixed-top">
@@ -117,11 +57,38 @@ if($_SESSION['acesso'] != "true"){
         </div><!--/.nav-collapse -->
       </div>
     </nav>
+    		
+    <div class="container" style="margin: 20px auto">
+    <div style="text-align: center">
+        <a target="_blank" href="aquisicaodados.php" class="btn btn-primary btn-lg active" role="button">Server data</a>
+    </div> 
+    </div>
     
     <div class="container">
-        <h4>Bem vindo <?php echo $_SESSION['nome'];?></h4>
-    </div>
-    <div id="container"></div>
-		
-    </body>
+         <table class="table table-striped">
+        <tr>
+            <td>ID</td>
+            <td>SENSOR</td>
+            <td>TEMPERATURA</td>
+            <td>DATA</td> 
+        </tr>
+        <?php
+            include "config/config.php";
+
+            $sql="SELECT id, sensor, temp, date FROM dados";
+            $result=mysqli_query($connect,$sql);
+
+            while($row=mysqli_fetch_array($result,MYSQLI_ASSOC)){
+                echo "<tr>";
+                echo    "<td>".$row["id"]."</td>";
+                echo    "<td>".$row["sensor"]."</td>";
+                echo    "<td>".$row["temp"]."</td>";
+                echo    "<td>".$row["date"]."</td>";
+                echo "</tr>";           
+            }
+        ?>
+        </table>          
+     </div>
+    
+  </body>
 </html>
