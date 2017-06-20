@@ -2,7 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
-/********************** ConfiguraÁ„o OneWire ***************************/
+/********************** Configura√ß√£o OneWire ***************************/
 
 #define ONE_WIRE_BUS 2  // pino D4 na placa ESP8266 nodemcu V2
 OneWire oneWire(ONE_WIRE_BUS);
@@ -16,13 +16,13 @@ float temp;
 int sent = 0;
 const int postingInterval = 5; // intervalo de postagem para o servidor
 
-/************************* ThingSpeak **********************************/
+/************************* Servidor **********************************/
 
-const char* server = "192.168.0.11";
-/************************* Conex„o WiFi*********************************/
+const char* server = "server ip";
+/************************* Conex√£o WiFi*********************************/
 
-const char* ssid = "Net Virtua 138"; 
-const char* password = "house138";
+const char* ssid = "ssid"; 
+const char* password = "password";
 
 /*************************** Setup **************************************/
 
@@ -66,9 +66,9 @@ void loop() {
   Serial.println(temp);
 }
 
-/******************* ImplementaÁ„o dos Prototypes**************************/
+/******************* Implementa√ß√£o dos Prototypes**************************/
 
-/* ConfiguraÁ„o WiFi */
+/* Configura√ß√£o WiFi */
 
 void connectWifi()
 {
@@ -100,7 +100,7 @@ void sendTemperature(float temp)
    postStr += String(temp);
                
    client.print("POST /projeto/salvardados.php HTTP/1.1\n");
-   client.print("Host: 192.168.0.11\n");
+   client.print("Host: hostIP\n");
    client.print("Connection: close\n");
    client.print("Content-Type: application/x-www-form-urlencoded\n");
    client.print("Content-Length: ");
