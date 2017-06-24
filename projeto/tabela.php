@@ -17,14 +17,49 @@ if($_SESSION['acesso'] != "true"){
 
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="css/estilo-controle.css" rel="stylesheet" type="text/css"/>
+    <link href="css/estilo-tabela.css" rel="stylesheet" type="text/css"/>
     
     <script src="js/jquery.min.js" type="text/javascript"></script>
     <script src="js/bootstrap.min.js" type="text/javascript"></script>
     <script src="js/bootbox.min.js" type="text/javascript"></script>
     <script src="js/highcharts.js" type="text/javascript"></script>
+    <script src="js/moment.js" type="text/javascript"></script>
+    <script src="js/combodate.js" type="text/javascript"></script>    
     
-       
-  </head>
+    <script type="text/javascript">
+        
+        $(function() {
+            $( "#formdate" ).submit(function(){
+                var objetos = this;
+                var dados = new FormData(objetos);
+                
+                $.ajax({
+                    type: "POST",
+                    url: '.php',
+                    data: dados,
+                    processData: false,
+                    cache: false,
+                    contentType: false,
+                    success: function(resultado){
+                        if(resultado.indexOf("dados_ok") >= 0){
+                            // do something
+                        } else if(resultado.indexOf("null_erro") >= 0){
+                            bootbox.alert({
+                                message: "Não existem registros nesse período.",
+                                size: 'small',
+                                backdrop: true
+                            });
+                        }
+                    }
+                });
+                return false;
+
+            });
+        });
+        
+    </script>
+    
+    </head>
   <body>
      <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
@@ -50,6 +85,7 @@ if($_SESSION['acesso'] != "true"){
                 <li><a href="#">opção 4</a></li>
               </ul>
             </li>
+            <li class="active"><a target="_blank" href="aquisicaodados.php">Server data</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="active"><a href="sair.php">Sair <span class="sr-only">(current)</span></a></li>
@@ -58,12 +94,68 @@ if($_SESSION['acesso'] != "true"){
       </div>
     </nav>
     		
-    <div class="container" style="margin: 20px auto">
-    <div style="text-align: center">
-        <a target="_blank" href="aquisicaodados.php" class="btn btn-primary btn-lg active" role="button">Server data</a>
-    </div> 
-    </div>
-    
+ <!--   <form>
+        <div class="container" style="margin: 5px auto">
+        <h4 class="form-control-heading text-center">Escolha o periodo de seleção:</h4>
+        <input type="text" id="time1" data-format="DD-MM-YYYY HH:mm" data-template="DD / MM / YYYY     HH : mm" name="datetime" data-custom-class="form-control" style="margin: 10px">
+            <script>
+                $(function(){
+                    $('#time1').combodate({
+                    maxYear: (new Date()).getFullYear(),  
+                    smartDays: true,
+                    value: new Date()
+                    });
+                });
+            </script>
+        <input type="text" id="time2" data-format="DD-MM-YYYY HH:mm" data-template="DD / MM / YYYY     HH : mm" name="datetime" data-custom-class="form-control" style="margin: 10px">
+            <script>
+            $(function(){
+                $('#time2').combodate({
+                maxYear: (new Date()).getFullYear(),  
+                smartDays: true,
+                value: new Date()
+                });
+            });
+            </script>
+        <button class="btn btn-sm btn-primary" type="submit" style="text-align: center">Definir periodo</button>
+        </div>
+    </form>-->
+    <form id="formdate" name="formdate">
+        <div class="container" style="text-align: center">
+            <label>Data inicial</label>
+            <input type="text" id="time1" name="time1" data-format="DD-MM-YYYY HH:mm" data-template="DD / MM / YYYY     HH : mm"  data-custom-class="form-control">
+            <script>
+                $(function(){
+                    $('#time1').combodate({
+                    maxYear: (new Date()).getFullYear(),  
+                    smartDays: true,
+                    value: new Date()
+                    });
+                });
+            </script>
+
+        </div> <!-- /container -->
+
+        <div class="container" style="text-align: center">
+            <label>&nbsp;Data final</label>
+            <input type="text" id="time2" name="time2" data-format="DD-MM-YYYY HH:mm" data-template="DD / MM / YYYY     HH : mm"  data-custom-class="form-control">
+            <script>
+            $(function(){
+                $('#time2').combodate({
+                maxYear: (new Date()).getFullYear(),  
+                smartDays: true,
+                value: new Date()
+                });
+            });
+            </script>
+        </div>
+        <div class="container" style="margin: 20px auto">
+        <div style="text-align: center">
+            <button type="submit" class="btn btn-primary">Definir periodo</button>
+        </div>
+        </div>
+    </form>  
+        
     <div class="container">
          <table class="table table-striped">
         <tr>
@@ -74,7 +166,7 @@ if($_SESSION['acesso'] != "true"){
         </tr>
         <?php
             include "config/config.php";
-
+            
             $sql="SELECT id, sensor, temp, date FROM dados";
             $result=mysqli_query($connect,$sql);
 

@@ -186,6 +186,7 @@ if($_SESSION['acesso'] != "true"){
                 <li><a href="#">opção 4</a></li>
               </ul>
             </li>
+            <li class="active"><a target="_blank" href="aquisicaodados.php">Server data</a></li>            
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="active"><a href="sair.php">Sair <span class="sr-only">(current)</span></a></li>
