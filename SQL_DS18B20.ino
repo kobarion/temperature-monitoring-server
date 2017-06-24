@@ -2,24 +2,24 @@
 #include <ESP8266WiFi.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
-/********************** ConfiguraÃ§Ã£o OneWire ***************************/
+/********************** Configuração OneWire ***************************/
 
 #define ONE_WIRE_BUS 2  // pino D4 na placa ESP8266 nodemcu V2
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature DS18B20(&oneWire);
 
 /*********************** Variaveis Globais *****************************/
-int ledPin = 13; //GPIO 13 (D7)
+int ledPin = 5; //GPIO 5 (D1)
 int ledBlink = 4; //GPIO 4 (D2)
-int ledBlink1 = 5; //GPIO 5 (D2)
+int ledBlink1 = 13; //GPIO 13 (D7)
 float temp;
 int sent = 0;
 const int postingInterval = 5; // intervalo de postagem para o servidor
 
 /************************* Servidor **********************************/
 
-const char* server = "server ip";
-/************************* ConexÃ£o WiFi*********************************/
+const char* server = "server";
+/************************* Conexão WiFi*********************************/
 
 const char* ssid = "ssid"; 
 const char* password = "password";
@@ -35,7 +35,7 @@ void setup() {
   digitalWrite(ledBlink,LOW);
   digitalWrite(ledBlink1,LOW);
   delay(10);
-  digitalWrite(ledPin,HIGH);
+  analogWrite(ledPin, 255);
   connectWifi();
  }
 
@@ -46,9 +46,7 @@ void loop() {
   if (WiFi.status() != WL_CONNECTED){
     connectWifi();    
   }
-  digitalWrite(ledPin,LOW);
-  digitalWrite(ledBlink,LOW);
-  digitalWrite(ledBlink1,LOW);
+  analogWrite(ledBlink1,0);
   
   int count = postingInterval;
   while(count--)
@@ -66,18 +64,18 @@ void loop() {
   Serial.println(temp);
 }
 
-/******************* ImplementaÃ§Ã£o dos Prototypes**************************/
+/******************* Implementação das Funções **************************/
 
-/* ConfiguraÃ§Ã£o WiFi */
+/* Configuração WiFi */
 
 void connectWifi()
 {
   Serial.print("Connecting to "+*ssid);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
-    digitalWrite(ledBlink1,LOW);
+    analogWrite(ledBlink1,0);
     delay(500);
-    digitalWrite(ledBlink1,HIGH);
+    analogWrite(ledBlink1,255);
     delay(500);
     Serial.print(".");
   }  
@@ -107,9 +105,9 @@ void sendTemperature(float temp)
    client.print(postStr.length());
    client.print("\n\n");
    client.print(postStr);
-   digitalWrite(ledBlink,HIGH);
+   analogWrite(ledBlink,255);
    delay(300);
-   digitalWrite(ledBlink,LOW);
+   analogWrite(ledBlink,0);
    }//end if
    sent++;
  client.stop();

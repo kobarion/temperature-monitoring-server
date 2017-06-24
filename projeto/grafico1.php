@@ -102,6 +102,7 @@ if($_SESSION['acesso'] != "true"){
                 <li class="dropdown-header">Mais opções</li>
                 <li><a href="#">opção 4</a></li>
               </ul>
+            <li class="active"><a target="_blank" href="aquisicaodados.php">Server data</a></li>              
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
