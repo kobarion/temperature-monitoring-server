@@ -12,12 +12,30 @@ if($_SESSION['acesso'] != "true"){
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
     
-    <title>Controle de Temperatura</title>
+    <title>Tabela</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="css/estilo-controle.css" rel="stylesheet" type="text/css"/>
     <link href="css/estilo-tabela.css" rel="stylesheet" type="text/css"/>
+    <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/manifest.json">
+    
     
     <script src="js/jquery.min.js" type="text/javascript"></script>
     <script src="js/bootstrap.min.js" type="text/javascript"></script>
@@ -25,39 +43,7 @@ if($_SESSION['acesso'] != "true"){
     <script src="js/highcharts.js" type="text/javascript"></script>
     <script src="js/moment.js" type="text/javascript"></script>
     <script src="js/combodate.js" type="text/javascript"></script>    
-    
-    <script type="text/javascript">
-        
-        $(function() {
-            $( "#formdate" ).submit(function(){
-                var objetos = this;
-                var dados = new FormData(objetos);
-                
-                $.ajax({
-                    type: "POST",
-                    url: '.php',
-                    data: dados,
-                    processData: false,
-                    cache: false,
-                    contentType: false,
-                    success: function(resultado){
-                        if(resultado.indexOf("dados_ok") >= 0){
-                            // do something
-                        } else if(resultado.indexOf("null_erro") >= 0){
-                            bootbox.alert({
-                                message: "Não existem registros nesse período.",
-                                size: 'small',
-                                backdrop: true
-                            });
-                        }
-                    }
-                });
-                return false;
-
-            });
-        });
-        
-    </script>
+   
     
     </head>
   <body>
@@ -93,40 +79,14 @@ if($_SESSION['acesso'] != "true"){
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-    		
- <!--   <form>
-        <div class="container" style="margin: 5px auto">
-        <h4 class="form-control-heading text-center">Escolha o periodo de seleção:</h4>
-        <input type="text" id="time1" data-format="DD-MM-YYYY HH:mm" data-template="DD / MM / YYYY     HH : mm" name="datetime" data-custom-class="form-control" style="margin: 10px">
-            <script>
-                $(function(){
-                    $('#time1').combodate({
-                    maxYear: (new Date()).getFullYear(),  
-                    smartDays: true,
-                    value: new Date()
-                    });
-                });
-            </script>
-        <input type="text" id="time2" data-format="DD-MM-YYYY HH:mm" data-template="DD / MM / YYYY     HH : mm" name="datetime" data-custom-class="form-control" style="margin: 10px">
-            <script>
-            $(function(){
-                $('#time2').combodate({
-                maxYear: (new Date()).getFullYear(),  
-                smartDays: true,
-                value: new Date()
-                });
-            });
-            </script>
-        <button class="btn btn-sm btn-primary" type="submit" style="text-align: center">Definir periodo</button>
-        </div>
-    </form>-->
-    <form id="formdate" name="formdate">
+    
+    <form action="tabela1.php" method="POST">
         <div class="container" style="text-align: center">
             <label>Data inicial</label>
-            <input type="text" id="time1" name="time1" data-format="DD-MM-YYYY HH:mm" data-template="DD / MM / YYYY     HH : mm"  data-custom-class="form-control">
+            <input type="text" id="date1" name="date1" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD / MM / YYYY     HH : mm"  data-custom-class="form-control">
             <script>
                 $(function(){
-                    $('#time1').combodate({
+                    $('#date1').combodate({
                     maxYear: (new Date()).getFullYear(),  
                     smartDays: true,
                     value: new Date()
@@ -138,10 +98,10 @@ if($_SESSION['acesso'] != "true"){
 
         <div class="container" style="text-align: center">
             <label>&nbsp;Data final</label>
-            <input type="text" id="time2" name="time2" data-format="DD-MM-YYYY HH:mm" data-template="DD / MM / YYYY     HH : mm"  data-custom-class="form-control">
+            <input type="text" id="date2" name="date2" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD / MM / YYYY     HH : mm"  data-custom-class="form-control">
             <script>
             $(function(){
-                $('#time2').combodate({
+                $('#date2').combodate({
                 maxYear: (new Date()).getFullYear(),  
                 smartDays: true,
                 value: new Date()
@@ -149,21 +109,26 @@ if($_SESSION['acesso'] != "true"){
             });
             </script>
         </div>
+       
         <div class="container" style="margin: 20px auto">
         <div style="text-align: center">
-            <button type="submit" class="btn btn-primary">Definir periodo</button>
+            <button class="btn btn-primary" type="submit">Definir periodo</button>
         </div>
         </div>
+        
     </form>  
         
     <div class="container">
-         <table class="table table-striped">
+        <table class="table table-striped" id="tableID">
         <tr>
             <td>ID</td>
             <td>SENSOR</td>
             <td>TEMPERATURA</td>
             <td>DATA</td> 
         </tr>
+        
+        <tr id="tabela"></tr>
+        
         <?php
             include "config/config.php";
             
