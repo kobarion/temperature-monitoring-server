@@ -6,7 +6,7 @@ Project for the "Project in Eletronics" course on the Eletronic Engineering prog
 
 1. [Download](https://github.com/kobarion/temperature-monitoring-server/releases) the latest release from GitHub.
 2. [Download](http://www.usbwebserver.net/en/download.php) the latest version of USBWebserver.
-3. Unzip and paste the folder `projeto` to the `root` folder at the USBWebserver directory.
+3. Unzip and paste the folder `projeto` and `favicon` to the `root` folder of the USBWebserver directory.
 
 ## Setting up ESP8266 and MySQL
 
@@ -69,4 +69,6 @@ After all the steps above, enter your browser and go to `localhost:8080/projeto`
 * Enter the user and password you created on the `usuarios` table.
 
 The control page should open with a dynamic graph plotting current values of temperature.
-Below it there's a button that shows all the data on the server formatted as json on another page. And a table also displaying the information.
+On the navigation bar there is a table option where you are able to select data from a period of time. Next to the table,
+there is a dropdown list named option, where you can choose which graph you wanna see.
+If you wish to use a 3rd party option to analyze the data, the data server option will create a json file with all data.
