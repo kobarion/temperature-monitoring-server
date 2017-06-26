@@ -4,6 +4,7 @@ session_start();
 if($_SESSION['acesso'] != "true"){
     header('location:index.html');
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -16,10 +17,11 @@ if($_SESSION['acesso'] != "true"){
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     
-    <title>Controle de Temperatura</title>
+    <title>Tabela</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="css/estilo-controle.css" rel="stylesheet" type="text/css"/>
+    <link href="css/estilo-tabela.css" rel="stylesheet" type="text/css"/>
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png">
@@ -40,69 +42,10 @@ if($_SESSION['acesso'] != "true"){
     <script src="js/bootstrap.min.js" type="text/javascript"></script>
     <script src="js/bootbox.min.js" type="text/javascript"></script>
     <script src="js/highcharts.js" type="text/javascript"></script>
+    <script src="js/moment.js" type="text/javascript"></script>
+    <script src="js/combodate.js" type="text/javascript"></script>    
     
-    <script>
-		var chart; // global
-		
-		function requestData() {
-			$.ajax({
-				url: 'plotgrafico.php', 
-				success: function(point) {
-					var series = chart.series[0],
-					shift = series.data.length > 40; 
-					chart.series[0].addPoint(eval(point), true, shift);
-					setTimeout(requestData, 3000);	
-				},
-				cache: false
-			});
-		}
-			
-		$(document).ready(function() {
-                            Highcharts.setOptions({
-                                global: {
-                                timezoneOffset: 3 * 60
-                                }
-                                
-                            });
-
-        
-                            chart = new Highcharts.Chart({
-				chart: {
-					renderTo: 'container',
-					defaultSeriesType: 'spline',
-					spacingLeft: 10,
-                                        spacingRight:10,
-                                        spacingTop:10,
-                                        events: {
-						load: requestData
-					}
-				},
-				title: {
-					text: 'Temperatura'
-				},
-				xAxis: {
-					type: 'datetime',
-					tickPixelInterval: 50,
-					maxZoom: 20 * 1000
-				},
-				yAxis: {
-					minPadding: 0.2,
-					maxPadding: 0.2,
-					title: {
-						text: 'Temp (ºC)',
-						margin: 10
-					}
-				},
-				series: [{
-					name: 'Sensor 1',
-					data: []
-					}]
-			});
-                        
-		});
-		</script>
-    
-  </head>
+    </head>
   <body>
      <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
@@ -128,7 +71,7 @@ if($_SESSION['acesso'] != "true"){
                 <li><a href="#">opção 4</a></li>
               </ul>
             </li>
-            <li class="active"><a target="_blank" href="aquisicaodados.php">Server data</a></li>            
+            <li class="active"><a target="_blank" href="aquisicaodados.php">Server data</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="active"><a href="sair.php">Sair <span class="sr-only">(current)</span></a></li>
@@ -137,10 +80,77 @@ if($_SESSION['acesso'] != "true"){
       </div>
     </nav>
     
+    <form action="tabela1.php" method="POST">
+        <div class="container" style="text-align: center">
+            <label>Data inicial</label>
+            <input type="text" id="date1" name="date1" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD / MM / YYYY     HH : mm"  data-custom-class="form-control">
+            <script>
+                $(function(){
+                    
+                    $('#date1').combodate({
+                    maxYear: (new Date()).getFullYear(),  
+                    smartDays: true,
+                    value: new Date()
+                    });
+                });
+            </script>
+
+        </div> <!-- /container -->
+
+        <div class="container" style="text-align: center">
+            <label>&nbsp;Data final</label>
+            <input type="text" id="date2" name="date2" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD / MM / YYYY     HH : mm"  data-custom-class="form-control">
+            <script>
+            $(function(){
+                $('#date2').combodate({
+                maxYear: (new Date()).getFullYear(),  
+                smartDays: true,
+                value: new Date()
+                });
+            });
+            </script>
+        </div>
+       
+        <div class="container" style="margin: 20px auto">
+        <div style="text-align: center">
+            <button class="btn btn-primary" type="submit">Definir periodo</button>
+        </div>
+        </div>
+        
+    </form>  
+        
     <div class="container">
-        <h4>Bem vindo <?php echo $_SESSION['nome'];?></h4>
+        <table class="table table-striped" id="tableID">
+        <tr>
+            <td>ID</td>
+            <td>SENSOR</td>
+            <td>TEMPERATURA</td>
+            <td>DATA</td> 
+        </tr>
+        
+        <tr id="tabela"></tr>
+        
+        <?php
+            include "config/config.php";
+            
+            $date1 = $_POST['date1'];
+            $date2 = $_POST['date2'];
+            
+            $sql="SELECT id, sensor, temp, date FROM dados WHERE date BETWEEN '$date1' AND '$date2'";
+            $result=mysqli_query($connect,$sql);
+
+            while($row=mysqli_fetch_array($result,MYSQLI_ASSOC)){
+                echo "<tr>";
+                echo    "<td>".$row["id"]."</td>";
+                echo    "<td>".$row["sensor"]."</td>";
+                echo    "<td>".$row["temp"]."</td>";
+                echo    "<td>".$row["date"]."</td>";
+                echo "</tr>";           
+            }
+        ?>
+        </table>          
     </div>
-    <div id="container"></div>
-		
-    </body>
+    
+    
+  </body>
 </html>
