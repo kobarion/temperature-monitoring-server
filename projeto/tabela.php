@@ -119,16 +119,14 @@ if($_SESSION['acesso'] != "true"){
     </form>  
         
     <div class="container">
-        <table class="table table-striped" id="tableID">
+        <table class="table table-striped">
         <tr>
             <td>ID</td>
             <td>SENSOR</td>
             <td>TEMPERATURA</td>
             <td>DATA</td> 
         </tr>
-        
-        <tr id="tabela"></tr>
-        
+                
         <?php
             include "config/config.php";
             

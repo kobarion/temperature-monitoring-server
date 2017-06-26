@@ -5,6 +5,9 @@ if($_SESSION['acesso'] != "true"){
     header('location:index.html');
 }
 
+$_SESSION['date1'] = $_POST['date1'];
+$_SESSION['date2'] = $_POST['date2'];
+
 ?>
 
 <!DOCTYPE html>
@@ -80,44 +83,16 @@ if($_SESSION['acesso'] != "true"){
       </div>
     </nav>
     
-    <form action="tabela1.php" method="POST">
-        <div class="container" style="text-align: center">
-            <label>Data inicial</label>
-            <input type="text" id="date1" name="date1" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD / MM / YYYY     HH : mm"  data-custom-class="form-control">
-            <script>
-                $(function(){
-                    
-                    $('#date1').combodate({
-                    maxYear: (new Date()).getFullYear(),  
-                    smartDays: true,
-                    value: new Date()
-                    });
-                });
-            </script>
-
-        </div> <!-- /container -->
-
-        <div class="container" style="text-align: center">
-            <label>&nbsp;Data final</label>
-            <input type="text" id="date2" name="date2" data-format="YYYY-MM-DD HH:mm:ss" data-template="DD / MM / YYYY     HH : mm"  data-custom-class="form-control">
-            <script>
-            $(function(){
-                $('#date2').combodate({
-                maxYear: (new Date()).getFullYear(),  
-                smartDays: true,
-                value: new Date()
-                });
-            });
-            </script>
-        </div>
-       
-        <div class="container" style="margin: 20px auto">
+    <div class="container" style="text-align: center">
+        <h4>Data Inicial : <?php echo $_SESSION['date1'];?></h4>
+        <h4>Data Final   : <?php echo $_SESSION['date2'];?></h4>
+    </div>
+    
+    <div class="container" style="margin: 20px auto">
         <div style="text-align: center">
-            <button class="btn btn-primary" type="submit">Definir periodo</button>
+            <a href="tabela.php" class="btn btn-primary active" role="button">Definir novo período</a>            
         </div>
-        </div>
-        
-    </form>  
+    </div>
         
     <div class="container">
         <table class="table table-striped" id="tableID">
@@ -133,8 +108,8 @@ if($_SESSION['acesso'] != "true"){
         <?php
             include "config/config.php";
             
-            $date1 = $_POST['date1'];
-            $date2 = $_POST['date2'];
+            $date1 = $_SESSION['date1'];
+            $date2 = $_SESSION['date2'];
             
             $sql="SELECT id, sensor, temp, date FROM dados WHERE date BETWEEN '$date1' AND '$date2'";
             $result=mysqli_query($connect,$sql);
