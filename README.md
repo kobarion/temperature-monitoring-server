@@ -36,6 +36,9 @@ client.print("Host: hostIP\n");
 
 * Acess using the default login ID `root` and the password `usbw`.
 
+* Now you have 2 options: Start your own new database following the steps below or if you only wish to do some testing you can 
+take the `.sql` file and import it.
+
 * Create a new database called `bdprojeto`.
 
 * Open the database and create the first table `usuarios`. On this table you will register the users.
