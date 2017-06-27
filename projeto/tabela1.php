@@ -71,7 +71,7 @@ $_SESSION['date2'] = $_POST['date2'];
                 <li><a href="grafico2.php">Gráfico 2</a></li>
                 <li role="separator" class="divider"></li>
                 <li class="dropdown-header">Mais opções</li>
-                <li><a href="#">opção 4</a></li>
+                <li><a href="grafico4.php">Gráfico 4</a></li>
               </ul>
             </li>
             <li class="active"><a target="_blank" href="aquisicaodados.php">Server data</a></li>
@@ -102,9 +102,7 @@ $_SESSION['date2'] = $_POST['date2'];
             <td>TEMPERATURA</td>
             <td>DATA</td> 
         </tr>
-        
-        <tr id="tabela"></tr>
-        
+               
         <?php
             include "config/config.php";
             
